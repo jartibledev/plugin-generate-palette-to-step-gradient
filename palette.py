@@ -286,18 +286,6 @@ def selector_color_run(procedure, run_mode, image, drawables, config, data):
                 entry_num = result.index(1)
 
 
-            
-
-        
-           
-
-
-
-        
-            
-            
-
-
         #crear paleta
         buttonCreatePalette = Gtk.Button(label = "Create Palette")
         buttonCreatePalette.connect("clicked",printGetters )
