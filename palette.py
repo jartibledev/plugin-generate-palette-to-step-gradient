@@ -15,11 +15,6 @@ plug_in_binary = "py3-generate-palette-to-step-gradient"
 class SpinButtonWindow(Gtk.Box):
     def __init__(self):
         Gtk.Box.__init__(self)
-        #super().__init__(title="SpinButton Demo")
-        #self.set_border_width(10)
-
-        #hbox = Gtk.Box(spacing=6)
-        #self.add(hbox)
 
         self.connect('destroy', Gtk.main_quit)
 
@@ -376,12 +371,12 @@ class SetUpPixelArt (Gimp.PlugIn):
                                           selector_color_run, None)
       procedure.set_sensitivity_mask (Gimp.ProcedureSensitivityMask.DRAWABLE |
                                       Gimp.ProcedureSensitivityMask.NO_DRAWABLES)
-      procedure.set_menu_label("Selector Color")
-      procedure.set_attribution("GoToJail", "GoToJail, Pixel Art", "2026")
+      procedure.set_menu_label("Palette to Gradient Generator")
+      procedure.set_attribution("JartibleDev", "JartibleDev, Palette to gradient step generator", "2026")
       procedure.add_menu_path ("<Image>/Palette to Gradient")
-      procedure.set_documentation ("Official Picker Color Tutorial in Python 3",
-                                   "Some longer text to explain about this procedure. " + \
-                                   "This is mostly for other developers calling this procedure.",
+      procedure.set_documentation ("Palete to gradient step generator",
+                                   "This plugin is useful to automatize your creation of palettes to painting areas in pixel art. " + \
+                                   "The plugin generate a palette from a choosen colour and return a degradade that you can use in pincel to paint areas.",
                                    None)
     return procedure
 
