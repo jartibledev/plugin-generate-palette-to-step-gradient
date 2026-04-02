@@ -40,26 +40,48 @@ def rgb_to_hsv( r, g, b):
             h = 4.0+gc-rc
         h = (h/6.0) % 1.0
         return h, s, v
+def colorChange (ColorInput, numberColors):
+    colorHSV = list(rgb_to_hsv(ColorInput[0] / 255, ColorInput[1] / 255, ColorInput[2] / 255))
+    h = colorHSV[0] * 360
+    s = colorHSV[1] * 100
+    v = (colorHSV[2] * 100) / 255
 
+    newcolorHSV = [h,s,v]
+
+     
+    return output
+     
 def monochromaticAlt ( ColorInput, numberColors):
         colorHSV = list(rgb_to_hsv(ColorInput[0] / 255, ColorInput[1] / 255, ColorInput[2] / 255))
+        print (colorHSV[2])
+        #h = colorHSV[0] * 360
+        #s = colorHSV[1] * 100
+        #v = round(colorHSV[2] * 100)
+
+        #newcolorHSV = [h,s,v]
+
         num = numberColors
         color = colorHSV
         result = []
         listRGB = []
         for steps in range(num):
             if steps > 0:
-                blank = color[2] - (color[2] / steps)
-                blankrounded = round(blank)
-                newColor = [color[0], blankrounded, color[2]]
+                blank = ((color[1]*100) - ((color[1]*100) / steps))/100
+                #blankrounded = round(blank)
+                newColor = [color[0], blank, color[2]]
                 result.append(newColor)
+            print (result)
+        
         result.append(color)
+        output = []
         for colors in result:
             colorRGB = hsv_to_rgb(h=colors[0], s=colors[1], v=colors[2])
-            listRGB.append(colorRGB)
-        return listRGB
+            newcolorRGB = [colorRGB[0]*255, colorRGB[1]*255, colorRGB[2]*255]
+            output.append(newcolorRGB)
 
-color = [200, 200, 200]
+        return output
+
+color = [250, 0 , 0]
 number = 5
 listColor = monochromaticAlt(ColorInput=color, numberColors=number)
 print(listColor)
