@@ -9,11 +9,8 @@ from gi.repository import Gegl
 
 import sys
 
-
-plug_in_proc   = "plug-in-GoToJail-py3-selector-color"
-plug_in_binary = "py3-selector-color"
-
-
+plug_in_proc   = "plug-in-jartibledev-py3-generate-palette-to-step-gradient"
+plug_in_binary = "py3-generate-palette-to-step-gradient"
 
 class SpinButtonWindow(Gtk.Box):
     def __init__(self):
@@ -203,8 +200,6 @@ class ColorButton(Gtk.Box):
         color = self.colorHex
         return color
 
-
-
 def selector_color_run(procedure, run_mode, image, drawables, config, data):
   if run_mode == Gimp.RunMode.INTERACTIVE:
        
@@ -284,7 +279,10 @@ def selector_color_run(procedure, run_mode, image, drawables, config, data):
                 result = procedure.run(config)
                 success = result.index(0)
                 entry_num = result.index(1)
-
+            
+            num_colors = palette.get_color_count()
+            num_segments = num_colors - 1
+            make_gradient(palette, num_segments, num_colors)
 
         #crear paleta
         buttonCreatePalette = Gtk.Button(label = "Create Palette")
@@ -311,8 +309,37 @@ def selector_color_run(procedure, run_mode, image, drawables, config, data):
         
   return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS, None)
 
+def make_gradient(palette, num_segments, num_colors):
 
-class SelectorColor (Gimp.PlugIn):
+    # name the gradient same as the source palette
+    # For now, the name of a resource is the same as the ID
+    palette_name = palette.get_name()
+    gradient = Gimp.Gradient.new(palette_name)
+    # assert gradient is valid but is has only one segment
+    assert gradient.get_number_of_segments() == 1
+
+    # split one segment into desired count
+    # index is zero-based
+    gradient.segment_range_split_uniform(0, 0, num_segments)
+   
+    palette_colors = palette.get_colors()
+    for color_number in range(0, num_segments):
+        if color_number == num_colors - 1:
+            color_number_next = 0
+        else:
+            color_number_next = color_number + 1
+        color_left = palette_colors[color_number]
+        color_right = palette_colors[color_number_next]
+        gradient.segment_set_left_color(color_number, color_left)
+        gradient.segment_set_right_color(color_number, color_right)
+        gradient.segment_range_set_blending_function(color_number, color_number_next, Gimp.GradientSegmentType.STEP)
+
+    
+    # Side effects on the context. Probably not what most would expect.
+    Gimp.context_set_gradient(gradient)
+    return gradient
+
+class SetUpPixelArt (Gimp.PlugIn):
   def do_query_procedures(self):
     return [ plug_in_proc ]
 
@@ -334,4 +361,4 @@ class SelectorColor (Gimp.PlugIn):
                                    None)
     return procedure
 
-Gimp.main(SelectorColor.__gtype__, sys.argv)
+Gimp.main(SetUpPixelArt.__gtype__, sys.argv)
