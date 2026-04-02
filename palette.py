@@ -116,7 +116,7 @@ class GeneratePalette :
             numberColors = numberColorsInput
 
             rgbColor = self.hexToRgb(hexColor)
-            self.listColorRgb = self.monochromaticColor( rgbColor, numberColors )
+            self.listColorRgb = self.monochromaticAlt( rgbColor, numberColors )
 
             hexListColor = self.generateHexList(self.listColorRgb)
             print (hexListColor)
@@ -147,21 +147,27 @@ class GeneratePalette :
 
     def monochromaticAlt (self, ColorInput, numberColors):
         colorHSV = list(self.rgb_to_hsv(ColorInput[0] / 255, ColorInput[1] / 255, ColorInput[2] / 255))
+        print (colorHSV[2])
+
         num = numberColors
         color = colorHSV
         result = []
         listRGB = []
         for steps in range(num):
             if steps > 0:
-                blank = color[2] - (color[2] / steps)
-                #blankrounded = round(blank)
+                blank = ((color[1]*100) - ((color[1]*100) / steps))/100
                 newColor = [color[0], blank, color[2]]
                 result.append(newColor)
+            print (result)
+        
         result.append(color)
+        output = []
         for colors in result:
             colorRGB = self.hsv_to_rgb(h=colors[0], s=colors[1], v=colors[2])
-            listRGB.append(colorRGB)
-        return listRGB
+            newcolorRGB = [round(colorRGB[0]*255), round(colorRGB[1]*255), round(colorRGB[2]*255)]
+            output.append(newcolorRGB)
+
+        return output
 
     def monochromaticColor(self, ColorInput, numberColors):
         color = ColorInput
